@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard - Kas Grup 4</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<script src="chart.min.js"></script>
+</head>
+<body class="dashboard-body">
+
+  <!-- TOPBAR (hanya tampil di layar HP) -->
+  <header class="mobile-topbar">
+    <button id="hamburgerBtn" class="hamburger-btn" aria-label="Buka menu">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="mobile-brand">
+      <span class="brand-icon-sm"></span>
+      <span>KAS GROUP 4</span>
+    </div>
+  </header>
+
+  <!-- OVERLAY untuk menutup sidebar di HP saat area luar diklik -->
+  <div id="sidebarOverlay" class="sidebar-overlay"></div>
+
+  <div class="app-layout">
+
+   <!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-icon">
+      <img src="Bg1.jpg" alt="Logo KAS GROUP 4">
+    </div>
+    <div class="brand-text">
+      <h2>KAS GROUP 4</h2>
+      <span id="sidebarUser">Halo, User</span>
+    </div>
+  </div>
+      <nav class="sidebar-nav">
+        <button class="nav-item active" data-section="overview" title="Dashboard">
+          <span class="nav-icon"></span> <span class="nav-text">Dashboard</span>
+        </button>
+        <button class="nav-item" data-section="pemasukan" title="Pemasukan">
+          <span class="nav-icon"></span> <span class="nav-text">Pemasukan</span>
+        </button>
+        <button class="nav-item" data-section="pengeluaran" title="Pengeluaran">
+          <span class="nav-icon"></span> <span class="nav-text">Pengeluaran</span>
+        </button>
+        <button class="nav-item" data-section="riwayat" title="Riwayat Transaksi">
+          <span class="nav-icon"></span> <span class="nav-text">Riwayat Transaksi</span>
+        </button>
+      </nav>
+
+      <button id="logoutBtn" class="btn-logout" title="Keluar">
+        <span></span> <span class="nav-text">Keluar</span>
+      </button>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+
+      <!-- ===================== OVERVIEW ===================== -->
+      <section id="section-overview" class="content-section active">
+        <div class="section-header">
+          <div>
+            <h1>Dashboard</h1>
+            <p class="subtitle">PT. CHAROEN POKPHAND - PLANT KRIAN
+            </p>
+          </div>
+        </div>
+
+        <div class="summary-cards">
+          <div class="card card-saldo">
+            <div class="card-label">Total Saldo</div>
+            <div class="card-value" id="totalSaldo">Rp 0</div>
+            <div class="card-icon"></div>
+          </div>
+          <div class="card card-masuk">
+            <div class="card-label">Total Pemasukan</div>
+            <div class="card-value" id="totalMasuk">Rp 0</div>
+            <div class="card-icon"></div>
+          </div>
+          <div class="card card-keluar">
+            <div class="card-label">Total Pengeluaran</div>
+            <div class="card-value" id="totalKeluar">Rp 0</div>
+            <div class="card-icon"></div>
+          </div>
+        </div>
+
+        <div class="chart-panel">
+          <div class="chart-panel-header">
+            <h3>Grafik Perkembangan Saldo</h3>
+            <p class="subtitle">Berdasarkan urutan transaksi yang tercatat</p>
+          </div>
+          <div class="chart-canvas-wrap">
+            <canvas id="saldoChart"></canvas>
+            <p id="chartFallback" class="empty-state hidden">Grafik tidak dapat ditampilkan. Pastikan file <code>chart.min.js</code> berada di folder yang sama dengan <code>dashboard.html</code>.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== PEMASUKAN ===================== -->
+      <section id="section-pemasukan" class="content-section">
+        <div class="section-header">
+          <div>
+            <h1>Pemasukan</h1>
+            <p class="subtitle">Catat dan kelola setiap pemasukan kas</p>
+          </div>
+        </div>
+
+        <div class="form-panel">
+          <form id="formPemasukan" class="transaction-form">
+            <div class="form-row">
+              <div class="input-group">
+                <label>Tanggal</label>
+                <input type="date" id="tglMasuk" required>
+              </div>
+              <div class="input-group">
+                <label>Jumlah (Rp)</label>
+                <input type="number" id="jumlahMasuk" min="1" placeholder="Contoh: 50000" required>
+              </div>
+            </div>
+            <div class="input-group">
+              <label>Keterangan</label>
+              <input type="text" id="ketMasuk" placeholder="Contoh: Iuran anggota bulan Januari" required>
+            </div>
+            <button type="submit" class="btn-primary btn-masuk">+ Tambah Pemasukan</button>
+          </form>
+        </div>
+
+        <div class="table-panel">
+          <h3>Daftar Pemasukan</h3>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr><th>Tanggal</th><th>Keterangan</th><th>Jumlah</th><th></th></tr>
+              </thead>
+              <tbody id="tabelMasuk"></tbody>
+            </table>
+            <p id="emptyMasuk" class="empty-state hidden">Belum ada data pemasukan.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== PENGELUARAN ===================== -->
+      <section id="section-pengeluaran" class="content-section">
+        <div class="section-header">
+          <div>
+            <h1>Pengeluaran</h1>
+            <p class="subtitle">Catat dan kelola setiap pengeluaran kas</p>
+          </div>
+        </div>
+
+        <div class="form-panel">
+          <form id="formPengeluaran" class="transaction-form">
+            <div class="form-row">
+              <div class="input-group">
+                <label>Tanggal</label>
+                <input type="date" id="tglKeluar" required>
+              </div>
+              <div class="input-group">
+                <label>Jumlah (Rp)</label>
+                <input type="number" id="jumlahKeluar" min="1" placeholder="Contoh: 30000" required>
+              </div>
+            </div>
+            <div class="input-group">
+              <label>Keterangan</label>
+              <input type="text" id="ketKeluar" placeholder="Contoh: Pembelian konsumsi rapat" required>
+            </div>
+            <button type="submit" class="btn-primary btn-keluar">+ Tambah Pengeluaran</button>
+          </form>
+        </div>
+
+        <div class="table-panel">
+          <h3>Daftar Pengeluaran</h3>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr><th>Tanggal</th><th>Keterangan</th><th>Jumlah</th><th></th></tr>
+              </thead>
+              <tbody id="tabelKeluar"></tbody>
+            </table>
+            <p id="emptyKeluar" class="empty-state hidden">Belum ada data pengeluaran.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== RIWAYAT ===================== -->
+      <section id="section-riwayat" class="content-section">
+        <div class="section-header">
+          <div>
+            <h1>Riwayat Transaksi</h1>
+            <p class="subtitle">Seluruh riwayat pemasukan dan pengeluaran</p>
+          </div>
+        </div>
+
+        <div class="table-panel">
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr><th>Tanggal</th><th>Jenis</th><th>Keterangan</th><th>Jumlah</th><th></th></tr>
+              </thead>
+              <tbody id="tabelRiwayat"></tbody>
+            </table>
+            <p id="emptyRiwayat" class="empty-state hidden">Belum ada transaksi tercatat.</p>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+<script src="dashboard.js"></script>
+</body>
+</html>
